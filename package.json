@@ -1,0 +1,35 @@
+{
+  "name": "node-latex-render",
+  "version": "1.0.0",
+  "description": "Render LaTeX documents using NodeJS",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "latex",
+    "render",
+    "nodejs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelkoelle/node-latex-render.git"
+  },
+  "author": "Michael Kölle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michaelkoelle/node-latex-render/issues"
+  },
+  "homepage": "https://github.com/michaelkoelle/node-latex-render#readme",
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3"
+  }
+}
