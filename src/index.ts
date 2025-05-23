@@ -1,3 +1,1 @@
-import { render } from "./compiler";
-
-export default { render };
+export { render } from "./compiler";
