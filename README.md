@@ -22,6 +22,16 @@ or
 yarn add node-latex-render
 ```
 
+## Example
+
+```javascript
+import { render } from "node-latex-render";
+
+const src = "./path/to/src.tex";
+
+const { pdf, logs } = render(src);
+```
+
 ## Supported Arguments
 
 This section details the supported arguments for each LaTeX compiler.
