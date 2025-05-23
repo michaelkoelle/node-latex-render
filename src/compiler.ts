@@ -68,6 +68,13 @@ function compile<T extends CompilerType>(
   );
 }
 
+/**
+ * Renders a LaTeX source file into a PDF.
+ *
+ * @param src - The path to the LaTeX source file.
+ * @param options - Optional configuration for the compiler, including arguments, log level, and number of passes.
+ * @returns An object containing the path to the generated PDF (if successful) and the parsed log items.
+ */
 export function render<T extends CompilerType>(
   src: string,
   options?: CompilerOptions<T>
