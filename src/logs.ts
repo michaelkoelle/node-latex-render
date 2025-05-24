@@ -220,7 +220,7 @@ export function parseLog(logfile: string): LogItem[] {
       logItem.content += linesUpToNextWhitespaceLine(log, true).join("\n");
       logItem.raw += logItem.content;
       const lineNo = logItem.raw.match(/l\.([0-9]+)/);
-      if (lineNo && logItem.line === null) {
+      if (lineNo && logItem.line === undefined) {
         logItem.line = parseInt(lineNo[1], 10);
       }
       logItems.push(logItem);
