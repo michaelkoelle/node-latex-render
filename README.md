@@ -29,8 +29,56 @@ import { render } from "node-latex-render";
 
 const src = "./path/to/src.tex";
 
-const { pdf, logs } = render(src);
+const { pdf, logs } = render(src); // Returns path to pdf and log items
 ```
+
+or
+
+```javascript
+import { render } from "node-latex-render";
+
+const src = "main.tex";
+const files = {
+  "main.tex": new TextEncoder().encode(`\\documentclass{article}
+                                        \\begin{document}
+                                            Hello, world!
+                                        \\end{document}`).buffer,
+};
+
+const { pdf, logs } = render(src, files); // Returns pdf buffer and log items
+```
+
+## Logs
+
+The `logs` returned by the `render` function contain detailed information about the LaTeX compilation process. Below are the types used for the logs:
+
+```typescript
+export enum LogLevel {
+  DEBUG = "debug",
+  INFO = "info",
+  TYPESETTING = "typesetting",
+  WARNING = "warning",
+  ERROR = "error",
+}
+
+export type LogItem = {
+  level: LogLevel;
+  message: string;
+  raw: string;
+  line?: number;
+  file?: string;
+  content?: string;
+};
+```
+
+Each `LogItem` represents a single log entry with the following properties:
+
+- `level`: The severity level of the log (e.g., `debug`, `info`, `warning`, etc.).
+- `message`: A human-readable message describing the log.
+- `raw`: The raw log output from the LaTeX compiler.
+- `line` (optional): The line number in the source file where the log entry occurred.
+- `file` (optional): The file associated with the log entry.
+- `content` (optional): Additional content related to the log entry.
 
 ## Supported Arguments
 

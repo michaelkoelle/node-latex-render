@@ -9,11 +9,11 @@ const PACKAGE_REGEX = /^(?:Package|Class|Module) (\b.+\b) Warning/;
 const FILE_LINE_ERROR_REGEX = /^([./].*):(\d+): (.*)/;
 
 export enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  TYPESETTING = 2,
-  WARNING = 3,
-  ERROR = 4,
+  DEBUG = "debug",
+  INFO = "info",
+  TYPESETTING = "typesetting",
+  WARNING = "warning",
+  ERROR = "error",
 }
 
 export type LogItem = {
@@ -38,6 +38,16 @@ enum State {
 interface LogTextState {
   lines: string[];
   row: number;
+}
+
+/**
+ * Returns the index of a given LogLevel key.
+ * @param key The LogLevel key as a string (e.g., "DEBUG")
+ * @returns The index (0-based) of the key, or -1 if not found
+ */
+export function getLogLevelIndex(level: LogLevel): number {
+  const entries = Object.entries(LogLevel);
+  return entries.findIndex(([key, value]) => value === level);
 }
 
 function createLogText(text: string): LogTextState {
