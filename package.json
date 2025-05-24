@@ -1,6 +1,6 @@
 {
   "name": "node-latex-render",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Render LaTeX documents using NodeJS",
   "scripts": {
     "build": "tsc",
