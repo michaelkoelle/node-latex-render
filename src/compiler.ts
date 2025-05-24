@@ -46,7 +46,7 @@ type CompilerArgs<T extends CompilerType> =
 
 type CompilerOptions<T extends CompilerType> = {
   compiler?: T;
-  args?: CompilerArgs<T>;
+  args?: CompilerArgs<T> | string;
   logLevel?: LogLevel;
   passover?: number;
 };
@@ -56,13 +56,20 @@ function assembleCompileCommand<T extends CompilerType>(
   options?: CompilerOptions<T>
 ): string {
   const compiler = options?.compiler || CompilerType.PDFTex;
-  const prependString = compiler === CompilerType.LUATex ? "--" : "-";
+  let commandArgs: string = "";
 
-  const commandArgs: string[] = Object.entries(options?.args || {}).map(
-    ([key, value]) => prependString + parseArguments(key, value)
-  );
+  if (typeof options?.args === "string") {
+    commandArgs = options.args;
+  } else {
+    const prependString = compiler === CompilerType.LUATex ? "--" : "-";
 
-  return [compiler, ...commandArgs, src].join(" ");
+    const commandArgsTemp: string[] = Object.entries(options?.args || {}).map(
+      ([key, value]) => prependString + parseArguments(key, value)
+    );
+    commandArgs = commandArgsTemp.join(" ");
+  }
+
+  return [compiler, commandArgs, src].join(" ");
 }
 
 function compile<T extends CompilerType>(
@@ -76,10 +83,20 @@ function compile<T extends CompilerType>(
 
   execSync(command, { cwd });
 
-  return join(
-    options?.args?.outputDirectory || cwd,
-    (options?.args?.jobname || fileName) + ".pdf"
-  );
+  const outputDirectory =
+    typeof options?.args === "object" &&
+    options?.args !== null &&
+    "outputDirectory" in options.args
+      ? (options.args as any).outputDirectory
+      : cwd;
+  const jobname =
+    typeof options?.args === "object" &&
+    options?.args !== null &&
+    "jobname" in options.args
+      ? (options.args as any).jobname
+      : fileName;
+
+  return join(outputDirectory, jobname + ".pdf");
 }
 
 function isCompilerOptions<T extends CompilerType>(
@@ -102,18 +119,6 @@ function isCompilerOptions<T extends CompilerType>(
     "passover" in obj
   );
 }
-
-export function render<T extends CompilerType>(
-  src: string,
-  options?: CompilerOptions<T>
-): RenderResult;
-
-export function render<T extends CompilerType>(
-  src: string,
-  files: Record<string, ArrayBuffer>,
-  options?: CompilerOptions<T>
-): RenderResultBuffer;
-
 /**
  * Renders a LaTeX source file into a PDF.
  *
@@ -121,6 +126,25 @@ export function render<T extends CompilerType>(
  * @param options - Optional configuration for the compiler, including arguments, log level, and number of passes.
  * @returns An object containing the path to the generated PDF (if successful) and the parsed log items.
  */
+export function render<T extends CompilerType>(
+  src: string,
+  options?: CompilerOptions<T>
+): RenderResult;
+
+/**
+ * Renders a LaTeX source file into a PDF.
+ *
+ * @param src - The path to the LaTeX source file.
+ * @param files - A map of file names to their contents as ArrayBuffers.
+ * @param options - Optional configuration for the compiler, including arguments, log level, and number of passes.
+ * @returns An object containing the PDF as an ArrayBuffer (if successful) and the parsed log items.
+ */
+export function render<T extends CompilerType>(
+  src: string,
+  files: Record<string, ArrayBuffer>,
+  options?: CompilerOptions<T>
+): RenderResultBuffer;
+
 export function render<T extends CompilerType>(
   src: string,
   optsOrFiles?: Record<string, ArrayBuffer> | CompilerOptions<T>,
@@ -178,9 +202,16 @@ export function render<T extends CompilerType>(
     // Do nothing, we will return the logs
   }
 
-  logs = parseLog(
-    `${join(srcDir, options?.args?.jobname || srcBasename)}.log`
-  ).filter((log) => getLogLevelIndex(log.level) >= getLogLevelIndex(logLevel));
+  const jobname =
+    typeof options?.args === "object" &&
+    options?.args !== null &&
+    "jobname" in options.args
+      ? (options.args as any).jobname
+      : srcBasename;
+
+  logs = parseLog(`${join(srcDir, jobname)}.log`).filter(
+    (log) => getLogLevelIndex(log.level) >= getLogLevelIndex(logLevel)
+  );
 
   // Clean up temporary files
   cleanUpFiles(srcDir);

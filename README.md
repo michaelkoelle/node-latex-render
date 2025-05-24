@@ -28,8 +28,15 @@ yarn add node-latex-render
 import { render } from "node-latex-render";
 
 const src = "./path/to/src.tex";
+const options = {
+  compiler: "pdflatex",
+  args: {
+    jobname: "example",
+    outputComment: "This is an example",
+  },
+};
 
-const { pdf, logs } = render(src); // Returns path to pdf and log items
+const { pdf, logs } = render(src, options); // Returns path to pdf and log items
 ```
 
 or
@@ -44,8 +51,12 @@ const files = {
                                             Hello, world!
                                         \\end{document}`).buffer,
 };
+const options = {
+  compiler: "pdflatex",
+  args: "-jobname=example",
+};
 
-const { pdf, logs } = render(src, files); // Returns pdf buffer and log items
+const { pdf, logs } = render(src, files, compiler); // Returns pdf buffer and log items
 ```
 
 ## Logs
