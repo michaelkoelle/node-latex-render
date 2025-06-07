@@ -24,6 +24,8 @@ yarn add node-latex-render
 
 ## Example
 
+You can either use a path to the main `.tex` file or a Map of file paths to ArrayBuffers.
+
 ```javascript
 import { render } from "node-latex-render";
 
@@ -39,7 +41,7 @@ const options = {
 const { pdf, logs } = render(src, options); // Returns path to pdf and log items
 ```
 
-or
+or using ArrayBuffers
 
 ```javascript
 import { render } from "node-latex-render";
